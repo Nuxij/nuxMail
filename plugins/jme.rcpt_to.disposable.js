@@ -1,9 +1,7 @@
 // jme.rcpt_to.disposable
+// Description: This plugin allows dated, auto-expire address aliases.
 
-// documentation via: haraka -c /Users/jme/Dropbox/code/nuxMail -h plugins/jme.rcpt_to.disposable
-
-// Put your plugin code here
-// type: `haraka -h Plugins` for documentation on how to create a plugin
+var Address = require('./address').Address;
 
 exports.hook_rcpt = function(next, connection, params) {
     var rcpt     = params[0];
@@ -21,7 +19,7 @@ exports.hook_rcpt = function(next, connection, params) {
 
     // get date - note Date constructor takes month-1 (i.e. Dec == 11).
     var expiry_date = new Date(match[2], match[3]-1, match[4]);
-    connection.loginfo(this, "Email expires on: " + expiry_date);
+    connection.logdebug(this, "Email expires on: " + expiry_date);
 
     var today = new Date();
     if (expiry_date < today) {
@@ -29,10 +27,10 @@ exports.hook_rcpt = function(next, connection, params) {
         connection.logdebug(this, "Email expired!");
         return next(DENY, "Expired email address");
     }
-    var newRcpt = match[1] + "@" + host;
 
     // now get rid of the extension:
-    connection.logdebug(this, "Aliasing dated email: " + newRcpt);
+    var newRcpt = match[1] + "@" + host;
+    connection.loginfo(this, "Aliasing dated email: " + newRcpt);
     connection.transaction.rcpt_to.pop();
     connection.transaction.rcpt_to.push(new Address('<' + newRcpt + '>'));
 

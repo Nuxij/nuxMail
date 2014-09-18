@@ -1,0 +1,9 @@
+{
+	"authMethod": "file",
+	"accounts": {
+		"example.com": [
+			"jme"
+		]
+	}
+}
+
