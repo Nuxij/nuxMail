@@ -10,14 +10,14 @@ exports.hook_rcpt = function(next, connection, params) {
     var host     = rcpt.host;
 
     connection.loginfo(this, "Got recipient: " + rcpt);
-
     // Check user matches regex 'user-YYYYMMDD':
     var match = /^(.*)-(\d{4})(\d{2})(\d{2})$/.exec(user);
     if (!match) {
         return next();
     }
 
-    // get date - note Date constructor takes month-1 (i.e. Dec == 11).
+    // Work out expiry date
+    //  - note Date constructor takes month-1 (i.e. Dec == 11).
     var expiry_date = new Date(match[2], match[3]-1, match[4]);
     connection.logdebug(this, "Email expires on: " + expiry_date);
 
@@ -27,10 +27,13 @@ exports.hook_rcpt = function(next, connection, params) {
         connection.logdebug(this, "Email expired!");
         return next(DENY, "Expired email address");
     }
+    user = match[1];
 
-    // now get rid of the extension:
-    var newRcpt = match[1] + "@" + host;
-    connection.loginfo(this, "Aliasing dated email: " + newRcpt);
+    // Rewrite address to non-dated version
+    connection.logdebug(this, "Rewriting dated email to: " + newRcpt);
+    var newRcpt = user + "@" + host;
+    params[0].user = user;
+    // Stick it back on the 'true' array, not just the params
     connection.transaction.rcpt_to.pop();
     connection.transaction.rcpt_to.push(new Address('<' + newRcpt + '>'));
 
