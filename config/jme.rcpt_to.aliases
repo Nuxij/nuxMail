@@ -1,0 +1,12 @@
+{
+	"authMethod": "file",
+	"aliases": {
+		"example.com": {
+			"jinux": "jme",
+			"jme": "joe"
+		},
+		"someother.com": {
+			"postmaster": "jinux@example.com"
+		}
+	}
+}

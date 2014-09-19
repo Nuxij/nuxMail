@@ -1,9 +1,8 @@
 // jme.rcpt_to.accounts
 // Description: Requires recipients to exist in a config file.
-// Author: Joe Eaves
 
 exports.hook_rcpt = function(next, connection, params) {
-	var config      = this.config.get('accounts', 'json') || {};
+	var config      = this.config.get('jme.rcpt_to.accounts', 'json') || {};
 	var rcpt        = params[0];
 	var address     = rcpt.address();
 	// We don't do any '-' matchng on this address
