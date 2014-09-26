@@ -1,8 +1,8 @@
 jme.queue_outbound.accounts
 ========
 
-This plugin provides user authorisation for MAIL_FROM addresses,
-an authenticated user can only send from addresses that are listed in the cnfiguration.
+This plugin provides user authorisation for MAIL_FROM addresses.
+An authenticated user can only send from addresses that are listed in the configuration.
 This works well in conjunction with rcpt_to alias plugins to ensure
 that users can only send email from the aliases that redirect to them,
 rather than any address they like.
