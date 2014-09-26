@@ -16,7 +16,7 @@ function getAliases(plugin, connection, config) {
 	var authMethod = config['authMethod'] || "file";
 	var aliases = false;
 	if (authMethod == "file") {
-		connection.logdebug(this, "Using file-auth");
+		connection.logdebug(plugin, "Using file-auth");
 		if (config['aliases']) {
 			aliases = config['aliases'];
 		} else {
@@ -31,7 +31,7 @@ function resolveAlias(plugin, connection, user, host, config) {
 	var localAliases = config[host];
 	var bottomAddress = user + "@" + host;
 	if (localAliases && localAliases[user]) {
-		if (bottomAddress == localAliases[user]) {
+		if (user == localAliases[user]) {
 			connection.logdebug(plugin, "Cyclic alias found, stopping here: " + bottomAddress);
 		} else {
 			aliasTo = localAliases[user].split("@", 2);
