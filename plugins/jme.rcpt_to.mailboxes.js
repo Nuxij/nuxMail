@@ -34,31 +34,31 @@ var checkValidMailbox = function(next, connection, params) {
 	var user        = rcpt.user;
 	var host        = rcpt.host;
 	var config		= loadConfig(this, connection);
-	var returnValue = [OK];
+	var returnValue;
 
 	if(config) {
 		if(hostInConfig(this, config, host)) {
 			config = config[host];
 			connection.loginfo(this, "Checking account for: " + address);
 
-			if (config['user']) {
+			if (config[user]) {
 				connection.logdebug(this, "User " + address + " exists");
 			} else {
 				// Maybe we should bounce instead?
 				connection.logdebug(this, "User " + address + " does not exist");
-				returnValue = [DENY, "User does not exist!"];
+				returnValue = "User does not exist!";
 			}
 		} else {
-			returnValue = [DENY, "Forwarding not enabled for " + host];
+			returnValue = "Forwarding not enabled for " + host;
 		}
 	} else {
 		connection.transaction.notes.discard = true;
 	}
 
-	if(returnValue[1]) {
-		return next(returnValue[0]);
+	if(returnValue) {
+		return next(DENY, returnValue);
 	} else {
-		return next(returnValue[0], returnValue[1]);
+		return next(OK);
 	}
 };
 
