@@ -23,8 +23,8 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
         before the queue. They **DO NOT** work together.
 
         This plugin is redundant if you push your mail directly to something like an IMAP server, since that will manage your users for you, but it's useful if you want to direct to, say, a ~/Maildir structure directly.
-#
-### Outbound
+
+#### Outbound
 * jme.queue_outbound.accounts
     * This plugin provides user authorisation for MAIL_FROM addresses.
        
