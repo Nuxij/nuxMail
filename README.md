@@ -7,10 +7,15 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
 
 #### Inbound
 * jme.rcpt_to.aliases
+
     * This is a simple aliases plugin that allows chaining.
+
 * jme.rcpt_to.disposable
+
     * This is the plugin from the haraka plugin tutorial. A nice idea so I kept it.
+
 * jme.rcpt_to.mailboxes
+
     * This plugin allows you to specify exactly which user mailboxes you will accept mail for.
         
         Because it manages users per domain, it has the benefit of managing which domains
