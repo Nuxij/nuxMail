@@ -7,7 +7,7 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
 
 #### Inbound
 * jme.rcpt_to.aliases
-    * "This is a simple aliases plugin that allows chaining."
+    * This is a simple aliases plugin that allows chaining.
 * jme.rcpt_to.disposable
     * This is the plugin from the haraka plugin tutorial. A nice idea so I kept it.
 * jme.rcpt_to.mailboxes
