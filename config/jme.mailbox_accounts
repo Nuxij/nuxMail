@@ -1,0 +1,11 @@
+{
+	"authMethod": "file",
+	"accounts": {
+		"example.com": {
+			"joe": {
+				"sendFrom": ["jinux","jme"]
+			}
+		}
+	}
+}
+

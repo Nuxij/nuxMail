@@ -1,42 +1,72 @@
 // jme.queue_outbound.accounts
 // Description: Requires recipients to exist in a config file.
 
-exports.checkAuthorisation = function(next, connection) {
-	var config      = this.config.get('jme.mailbox_accounts', 'json') || {};
-	var from        = connection.transaction.mail_from;
-	var address     = from.address();
-	var user        = from.user;
-	var host        = from.host;
-	var authUser	= connection.notes.auth_user;
-	var accountHash = {};
+var checkAccountHash = function(plugin, connection, authHost) {
+	var config      = plugin.config.get('jme.mailbox_accounts', 'json') || {};
+	var authMethod  = config['authMethod'] || "file";
+	var returnValue = {};
 
-	connection.loginfo(this, "Checking account for: " + authUser);
-	var authMethod = config['authMethod'] || "file";
 	if (authMethod == "file") {
-		connection.logdebug(this, "Using file-auth");
+		connection.logdebug(plugin, "Using file-auth");
 		if (config['accounts']) {
-			if (config['accounts'][host]) {
-				accountHash = config['accounts'][host];
+			if (config['accounts'][authHost]) {
+				returnValue = config['accounts'][authHost];
 			} else {
-				connection.logdebug(this, "No users configured for host: " + host);
-				return next(DENY, "This server does not handle mail for: " + host);
+				connection.logdebug(plugin, "No users configured for host: " + authHost);
+				returnValue = {
+					'err': DENY,
+					'message': "This server does not handle mail for: " + authHost
+				};
 			}
 		} else {
-			connection.logdebug(this, "Error! No accounts table in config file!");
+			connection.logdebug(plugin, "Error! No accounts table in config file!");
 		}
 	}
 
-	if (accountHash[authUser]) {
-		if(accountHash[authUser]['sendFrom'].indexOf(user) != -1 || user == authUser) {
-			connection.logdebug(this, "Sender is authorised for address " + address);
-			return next();
-		} else {
-			connection.logdebug(this, "Sender is not authorised to send from address: " + address);
-			return next(DENY, "You are not authorised to send from address: " + address);
-		}
+	return returnValue;
+};
+
+var isUserAuthorised = function(plugin, connection, accountHash, fromUser, authUser, address) {
+	if (accountHash[authUser] &&
+		(fromUser == authUser ||
+			accountHash[authUser]['sendFrom'].indexOf(fromUser) != -1 ||
+			accountHash[authUser]['sendFrom'].indexOf(address) != -1
+		)
+	) {
+		connection.logdebug(plugin, "Sender is authorised to send from address: " + address);
+		return true;
 	} else {
-		connection.logdebug(this, "Sender is not authorised to send from address: " + address);
-		return next(DENY, "You are not authorised to send from address: " + address);
+		connection.logdebug(plugin, "Sender is not authorised to send from address: " + address);
+		return false;
+	}
+};
+
+exports.checkAuthorisation = function(next, connection) {
+	var from        = connection.transaction.mail_from;
+	var address     = from.address();
+	var fromUser    = from.user;
+	var fromHost    = from.host;
+	var authLogin   = connection.notes.auth_user;
+	var authUser	= authLogin.split("@")[0];
+	var authHost	= authLogin.split("@")[1];
+
+	connection.loginfo(this, "Checking authorisation for: " + authLogin + " as " + address);
+
+	if (!authHost) {
+		connection.logdebug(this, "User authenticated with no domain part, rejecting email");
+		return (DENY, "No domain part in username, please talk to your administrator.");
+	}
+
+	var accountHash = checkAccountHash(plugin, connection, authHost);
+
+	if (accountHash['err']) {
+		return next(accountHash['err'], accountHash['message']);
+	}
+
+	if (isUserAuthorised(plugin, connection, accountHash, fromUser, authUser, address)) {
+		return next();
+	} else {
+		return next(DENY, "You are not authorised to send from: " + address);
 	}
 };
 

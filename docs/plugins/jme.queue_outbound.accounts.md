@@ -51,6 +51,21 @@ Configuration
 		If you don't want to allow a user to send from any other address than their own,
 		just leave the 'sendFrom' list empty ([]).
 
+	* **Notes**
+
+		At the moment there is one thing worth noting. This plugin needs your users to auth
+		using 'user@domain.com' usernames. If users authenticate with no domain part in their
+		name, we can't tell who they are supposed to be, so we can't chech authorisation.
+
+		We use 'fail closed' logic that stops users potentially being able to send as others by
+		using the username domain part or nothing at all.
+		We could potentially use the domain part of the MAIL_FROM header, but then 'tom@dev.com'
+		would be allowed to send as 'tom@otherdomain.com' if the latter existed without any
+		explicit permission. Not good!
+
+		Essentially, if you don't use 'user@domain.com' authentication, your users won't be able
+		to send email.
+
 Example Configuration
 -------------
 {
