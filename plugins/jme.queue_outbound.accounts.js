@@ -57,13 +57,13 @@ exports.checkAuthorisation = function(next, connection) {
 		return (DENY, "No domain part in username, please talk to your administrator.");
 	}
 
-	var accountHash = checkAccountHash(plugin, connection, authHost);
+	var accountHash = checkAccountHash(this, connection, authHost);
 
 	if (accountHash['err']) {
 		return next(accountHash['err'], accountHash['message']);
 	}
 
-	if (isUserAuthorised(plugin, connection, accountHash, fromUser, authUser, address)) {
+	if (isUserAuthorised(this, connection, accountHash, fromUser, authUser, address)) {
 		return next();
 	} else {
 		return next(DENY, "You are not authorised to send from: " + address);

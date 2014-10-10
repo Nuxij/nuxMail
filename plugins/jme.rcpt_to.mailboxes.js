@@ -17,7 +17,7 @@ var loadConfig = function(plugin, connection) {
 	return returnValue;
 };
 
-var hostInConfig = function(plugin, config, host) {
+var hostInConfig = function(plugin, connection, config, host) {
 	if (config[host]) {
 		return true;
 	} else {
@@ -37,7 +37,7 @@ var checkValidMailbox = function(next, connection, params) {
 	var returnValue;
 
 	if(config) {
-		if(hostInConfig(this, config, host)) {
+		if(hostInConfig(this, connection, config, host)) {
 			config = config[host];
 			connection.loginfo(this, "Checking account for: " + address);
 
