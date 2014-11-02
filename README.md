@@ -17,7 +17,7 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
 * jme.rcpt_to.mailboxes
 
     * This plugin allows you to specify exactly which user mailboxes you will accept mail for.
-        
+
         Because it manages users per domain, it has the benefit of managing which domains
         you accept mail to as well, so it should replace "rcpt_to.in_host_list" as the final plugin
         before the queue. They **DO NOT** work together.
@@ -27,7 +27,10 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
 #### Outbound
 * jme.queue_outbound.accounts
     * This plugin provides user authorisation for MAIL_FROM addresses.
-       
+
         An authenticated user can only send from addresses that are listed in the configuration.
         This works well in conjunction with rcpt_to alias plugins to ensure that users can only
         send email from the aliases that redirect to them, rather than any address they like.
+
+* jme.auth.flat_file.sha512crypt
+    * This plugin provides flat-file user authentication as per the default auth/flat_file plugin, but stores SHA512-CRYPT password hashes, instead of cleartext passwords.

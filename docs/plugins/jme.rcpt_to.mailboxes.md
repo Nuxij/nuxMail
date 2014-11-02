@@ -34,8 +34,8 @@ Configuration
 	    	}```
 
 	    As you can see, each username key has an object value as well. This is because the
-	    configuration is shared between this plugin and ```jme.queue_outbound.accounts```,
-	    which requires some extra fields per username. For now though, you may just leave it empty.
+	    configuration is shared between this plugin and other ```jme.*``` plugins,
+	    which require some extra fields per username. For this though, you may just leave it empty.
 
 Example Configuration
 -------------

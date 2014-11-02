@@ -27,7 +27,7 @@ exports.hook_capabilities = function (next, connection) {
 	next();
 };
 
-exports.retrieveUser = function (user, cb) {
+exports.retrieveUser = function (connection, user, cb) {
 	var plugin = this;
 	var username = user.split('@')[0];
 	var domain = user.split('@')[1] || '';
@@ -49,7 +49,7 @@ exports.validateHash = function(hash, password) {
 
 exports.check_plain_passwd = function (connection, user, password, cb) {
 	var instance = this;
-	this.retrieveUser(user, function (hash) {
+	this.retrieveUser(connection, user, function (hash) {
 		if (hash === null) {
 			return cb(false);
 		}

@@ -3,7 +3,7 @@
 	"accounts": {
 		"example.com": {
 			"joe": {
-				"password": "$6$salt$hash"
+				"password": "$6$8uHLabRw5l3sjPXu$E3qi.Dtie2j6zj7hCnMN0S0oomXMQ4QHv5MrrgotvcqoJkPO6BhM1wbRmVbqJjc4ZN/mtHBk5WywhwFKHeNdE0"
 				"sendFrom": ["jinux","jme"]
 			}
 		}
