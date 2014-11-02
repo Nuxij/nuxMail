@@ -36,7 +36,7 @@ var checkValidMailbox = function(next, connection, params) {
 	var config		= loadConfig(this, connection);
 	var returnValue;
 
-	if(config) {
+	if(config && !connection.transaction.notes.pipe) {
 		if(hostInConfig(this, connection, config, host)) {
 			config = config[host];
 			connection.loginfo(this, "Checking account for: " + address);

@@ -34,12 +34,20 @@ function resolveAlias(plugin, connection, user, host, config) {
 		if (user == localAliases[user]) {
 			connection.logdebug(plugin, "Cyclic alias found, stopping here: " + bottomAddress);
 		} else {
-			aliasTo = localAliases[user].split("@", 2);
-			user = aliasTo[0];
-			if (aliasTo[1]) {
-				host = aliasTo[1];
+			if (Object.prototype.toString.call(localAliases[user]) === '[object Array]') {
+				if (localAliases[user][0] === "|") {
+					connection.transaction.notes.pipe = true;
+					connection.transaction.notes.pipeCommand = localAliases[user][1] || null;
+					connection.transaction.notes.pipeArgs = localAliases[user][2] || [];
+				}
+			} else {
+				aliasTo = localAliases[user].split("@", 2);
+				user = aliasTo[0];
+				if (aliasTo[1]) {
+					host = aliasTo[1];
+				}
+				bottomAddress = resolveAlias(plugin, connection, user, host, config);
 			}
-			bottomAddress = resolveAlias(plugin, connection, user, host, config);
 		}
 	}
 	return bottomAddress;
