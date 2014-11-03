@@ -6,15 +6,15 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
 ### Plugins
 
 #### Inbound
-* jme.rcpt_to.aliases
+* `jme.rcpt_to.aliases`
 
     * This is a simple aliases plugin that allows chaining.
 
-* jme.rcpt_to.disposable
+* `jme.rcpt_to.disposable`
 
     * This is the plugin from the haraka plugin tutorial. A nice idea so I kept it.
 
-* jme.rcpt_to.mailboxes
+* `jme.rcpt_to.mailboxes`
 
     * This plugin allows you to specify exactly which user mailboxes you will accept mail for.
 
@@ -24,13 +24,20 @@ In here be some plugins (and docs :D) I've written to run my mail server. Submit
 
         This plugin is redundant if you push your mail directly to something like an IMAP server, since that will manage your users for you, but it's useful if you want to direct to, say, a ~/Maildir structure directly.
 
+* `jme.queue.pipe_command`
+
+    * This plugin allows piping of emails to external commands, via stdin. Used in conjunction with
+    `jme.rcpt_to.aliases`.
+
 #### Outbound
-* jme.queue_outbound.accounts
+* `jme.auth.flat_file.sha512crypt`
+
+    * This plugin provides flat-file user authentication as per the default auth/flat_file plugin, but stores SHA512-CRYPT password hashes, instead of cleartext passwords.
+
+* `jme.queue_outbound.accounts`
+
     * This plugin provides user authorisation for MAIL_FROM addresses.
 
         An authenticated user can only send from addresses that are listed in the configuration.
         This works well in conjunction with rcpt_to alias plugins to ensure that users can only
         send email from the aliases that redirect to them, rather than any address they like.
-
-* jme.auth.flat_file.sha512crypt
-    * This plugin provides flat-file user authentication as per the default auth/flat_file plugin, but stores SHA512-CRYPT password hashes, instead of cleartext passwords.
