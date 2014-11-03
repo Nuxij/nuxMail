@@ -21,7 +21,7 @@ exports.hook_queue = function (next, connection) {
                 notes.discard = true;
                 connection.loginfo(this, "Piping to external command: " + notes.pipeCommand);
                 var pipedCommand = new externalCommand(
-                        notes.pipeCommand, notes.pipArgs, msg_stream,
+                        notes.pipeCommand, notes.pipeArgs, msg_stream,
                         function (code, signal, commandInstance) {
                                 commandInstance.exit = 1;
                                 connection.logdebug(instance, "Command complete: " + code + " " + signal);
