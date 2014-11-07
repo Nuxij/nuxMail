@@ -6,7 +6,7 @@ var externalCommand = function(command, args, inputStream, exitFunction) {
         var instance = this;
         if (command !== null) {
                 var child = childProcess.spawn(command, args);
-                instance.exit = 0;  // Send a cb to set 1 when command exits
+                instance.exit = 0;
                 child.on('exit', function (code, signal) { exitFunction(code, signal, instance); });
                 inputStream.pipe(child.stdin, {});
         }
@@ -28,5 +28,7 @@ exports.hook_queue = function (next, connection) {
                                 next();
                         }.bind(this)
                 );
+        } else {
+                next();
         }
 };
