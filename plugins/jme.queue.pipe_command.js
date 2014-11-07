@@ -1,15 +1,16 @@
 // jme.queue.pipe_command.js
 
-var childProcess = require('child_process');
+var ChildProcess = require('child_process');
 
-var externalCommand = function(command, args, inputStream, exitFunction) {
+var ExternalCommand = function(command, args, inputStream, exitFunction) {
         var instance = this;
-        if (command !== null) {
-                var child = childProcess.spawn(command, args);
-                instance.exit = 0;
-                child.on('exit', function (code, signal) { exitFunction(code, signal, instance); });
-                inputStream.pipe(child.stdin, {});
+        if (command === null) {
+                return next();
         }
+        var child = ChildProcess.spawn(command, args);
+        instance.exit = 0;
+        child.on('exit', function (code, signal) { exitFunction(code, signal, instance); });
+        inputStream.pipe(child.stdin, {});
 };
 
 exports.hook_queue = function (next, connection) {
@@ -17,18 +18,17 @@ exports.hook_queue = function (next, connection) {
         var msg_stream = connection.transaction.message_stream;
         var notes = connection.transaction.notes;
 
-        if(notes.pipe === true) {
-                notes.discard = true;
-                connection.loginfo(this, "Piping to external command: " + notes.pipeCommand);
-                var pipedCommand = new externalCommand(
-                        notes.pipeCommand, notes.pipeArgs, msg_stream,
-                        function (code, signal, commandInstance) {
-                                commandInstance.exit = 1;
-                                connection.logdebug(instance, "Command complete: " + code + " " + signal);
-                                next();
-                        }.bind(this)
-                );
-        } else {
+        if(!notes.pipe) {
                 next();
         }
+        notes.discard = true;
+        connection.loginfo(this, "Piping to external command: " + notes.pipeCommand);
+        var pipedCommand = new ExternalCommand(
+                notes.pipeCommand, notes.pipeArgs, msg_stream,
+                function (code, signal, commandInstance) {
+                        commandInstance.exit = 1;
+                        connection.logdebug(instance, "Command complete: " + code + " " + signal);
+                        next();
+                }
+        );
 };

@@ -6,7 +6,8 @@
 			"jme": "joe"
 		},
 		"someother.com": {
-			"postmaster": "jinux@example.com"
+			"postmaster": "jinux@example.com",
+			"mymail": ["|", "/bin/mlmmj" []]
 		}
 	}
 }
