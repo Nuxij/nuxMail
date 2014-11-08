@@ -60,8 +60,8 @@ exports.hook_rcpt = function(next, connection, params) {
 	var user          = rcpt.user;
 	var host          = rcpt.host;
 	var delimitedUser = user.match(/([^\+]+)(\+.*)?/);
-	var targetUser    = delimitedAddress[1];
-	var wildcardPart  = delimitedAddress[2] || null;
+	var targetUser    = delimitedUser[1];
+	var wildcardPart  = delimitedUser[2] || null;
 
 	connection.loginfo(this, "Checking aliases for: " + address);
 	var addressBefore = targetUser + "@" + host;
