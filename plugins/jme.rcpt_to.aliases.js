@@ -54,21 +54,24 @@ function resolveAlias(plugin, connection, user, host, config) {
 }
 
 exports.hook_rcpt = function(next, connection, params) {
-	var config      = this.config.get('jme.rcpt_to.aliases', 'json') || {};
-	var rcpt        = params[0];
-	var address     = rcpt.address();
-	var user        = rcpt.user;
-	var host        = rcpt.host;
+	var config        = this.config.get('jme.rcpt_to.aliases', 'json') || {};
+	var rcpt          = params[0];
+	var address       = rcpt.address();
+	var user          = rcpt.user;
+	var host          = rcpt.host;
+	var delimitedUser = user.match(/([^\+]+)(\+.*)?/);
+	var targetUser    = delimitedAddress[1];
+	var wildcardPart  = delimitedAddress[2] || null;
 
 	connection.loginfo(this, "Checking aliases for: " + address);
-	var addressBefore = user + "@" + host;
+	var addressBefore = targetUser + "@" + host;
 	var aliases = getAliases(this, connection, config);
-	var addressAfter = resolveAlias(this, connection, user, host, aliases);
+	var addressAfter = resolveAlias(this, connection, targetUser, host, aliases);
 
 	if (addressBefore == addressAfter) {
-		connection.logdebug(this, "Found no aliases for: " + addressBefore);
+		connection.logdebug(this, "Found no aliases for: " + user + "@" + host);
 	} else {
-		connection.logdebug(this, addressBefore + " aliases to " + addressAfter);
+		connection.logdebug(this, user + "@" + host + " aliases to " + addressAfter);
 		setParams(params, addressAfter);
 		addAddressToTransaction(connection, addressAfter);
 	}
