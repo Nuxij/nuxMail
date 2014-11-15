@@ -24,7 +24,7 @@ exports.hook_queue = function (next, connection) {
         notes.discard = true;
         connection.loginfo(this, "Piping to external command: " + notes.pipeCommand);
 
-        connection.transaction.add_leading_header('Return-Path', transaction.mail_from.address());
+        connection.transaction.add_leading_header('Return-Path', connection.transaction.mail_from.address());
         connection.transaction.add_leading_header('Envelope-To', connection.transaction.rcpt_to[0]);
 
         var pipedCommand = new ExternalCommand(
