@@ -48,7 +48,8 @@ var checkValidMailbox = function(next, connection, params) {
 				connection.logdebug(this, "User " + address + " does not exist");
 				returnValue = "User does not exist!";
 			}
-		} else if (connection.remote_ip == connection.local_ip) {
+		} else if ((connection.remote_ip == "127.0.0.1") ||
+				(connection.remote_ip == "::")) {
 			connection.relaying = true;
 			connection.logdebug(this, "Forwarding allowed for " +
 				connection.remote_ip + " (to " + address + ")");
