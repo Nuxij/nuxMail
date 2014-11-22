@@ -12,7 +12,7 @@ var ExternalCommand = function(command, args, headers, inputStream, exitFunction
 	instance.exit = 0;
 	child.on('exit', function (code, signal) { exitFunction(code, signal, instance); });
 	child.stdin.write(headers.join("\n") + "\n");
-	inputStream.pipe(child.stdin, {dot_stuffing: true, ending_dot: true});
+	inputStream.pipe(child.stdin, {dot_stuffing: true, line_endings: "\n"});
 };
 
 exports.hook_queue = function (next, connection) {
