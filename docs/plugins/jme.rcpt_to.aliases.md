@@ -2,8 +2,8 @@ jme.rcpt_to.aliases
 ========
 
 This is a simple aliases plugin that allows chaining.
-There is no wildcard matching at this time, the aliases will match
-exactly as they are written.
+Aliases allow a single wildcard character '+', to fall
+in line with standard user-delimiter practice.
 
 * Note: The 'official' aliases plugin has a warning about using it with the 'queue/smtp\_proxy' plugin.
     I haven't tested this plugin with that one, so lets assume it doesn't work either.

@@ -26,6 +26,18 @@ var hostInConfig = function(plugin, connection, config, host) {
 	}
 };
 
+var checkLocalSender = function(connection) {
+	if ((connection.remote_ip == "127.0.0.1") ||
+		(connection.remote_ip == "::"))
+	{
+		connection.relaying = true;
+		connection.logdebug(this, "Forwarding allowed for " +
+			connection.remote_ip + " (to " + address + ")");
+		return true;
+	}
+	return false;
+}
+
 var checkValidMailbox = function(next, connection, params) {
 	var rcpt        = params[0];
 	var address     = rcpt.address();
@@ -36,28 +48,25 @@ var checkValidMailbox = function(next, connection, params) {
 	var config		= loadConfig(this, connection);
 	var returnValue;
 
-	if(config && !connection.transaction.notes.pipe) {
-		if(hostInConfig(this, connection, config, host)) {
-			config = config[host];
-			connection.loginfo(this, "Checking account for: " + address);
+	if(!checkLocalSender(connection)) {
+		if(config && !connection.transaction.notes.pipe) {
+			if(hostInConfig(this, connection, config, host)) {
+				config = config[host];
+				connection.loginfo(this, "Checking account for: " + address);
 
-			if (config[user]) {
-				connection.logdebug(this, "User " + address + " exists");
+				if (config[user]) {
+					connection.logdebug(this, "User " + address + " exists");
+				} else {
+					// Maybe we should bounce instead?
+					connection.logdebug(this, "User " + address + " does not exist");
+					returnValue = "User does not exist!";
+				}
 			} else {
-				// Maybe we should bounce instead?
-				connection.logdebug(this, "User " + address + " does not exist");
-				returnValue = "User does not exist!";
+				returnValue = "Forwarding not enabled for " + host;
 			}
-		} else if ((connection.remote_ip == "127.0.0.1") ||
-				(connection.remote_ip == "::")) {
-			connection.relaying = true;
-			connection.logdebug(this, "Forwarding allowed for " +
-				connection.remote_ip + " (to " + address + ")");
 		} else {
-			returnValue = "Forwarding not enabled for " + host;
+			connection.transaction.notes.discard = true;
 		}
-	} else {
-		connection.transaction.notes.discard = true;
 	}
 
 	if(returnValue) {

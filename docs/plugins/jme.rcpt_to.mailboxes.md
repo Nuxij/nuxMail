@@ -9,6 +9,11 @@ before the queue. They **DO NOT** work together.
 There is no wildcard matching for the accounts, other plugins must catch
 aliases/wildcards for you before the email gets here.
 
+This plugin also deals with local senders. If the remote_ip of the connection
+matches '::' or '127.0.0.1', it will set the relaying flag. This allows Haraka
+to be used as a local SMTP for less configurable programs (like cron), that
+just talk directly to localhost:25 with no authentication.
+
 Configuration
 -------------
 
