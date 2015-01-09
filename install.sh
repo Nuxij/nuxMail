@@ -13,12 +13,9 @@ main() {
 
 	# Install haraka
 	if [[ ! $(npm list -g Haraka | grep Haraka) ]]; then
-		if [[ "$(whoami)"  == "root" ]]; then
-			npm install -g Haraka sha512crypt-node
-		else
-			echo "Please install Haraka globall via: sudo npm install -g Haraka"
-			exit 1
-		fi
+		echo "Please install Haraka globally via: sudo npm install -g Haraka"
+		echo "You will need the sha512crypt-node package too: sudo npm install -g sha512crypt-node"
+		exit 1
 	fi
 
 	# Install haraka default configs
@@ -79,15 +76,11 @@ createLinks() {
 
 ask_hostDomain() {
 	read -p "What is your domain? " DOMAIN
-	read -p "Is $(hostname).$DOMAIN the FQDN? [y/n] " FQDN
-	if [[ "$FQDN" != [YyNn] ]]; then
-		echo "Please answer yes or no."
-		ask_hostDomain
-	elif [[ "$FQDN" == [Nn] ]]; then
-		ask_hostDomain
-	else
+	read -p "What is my FQDN? [$(hostname).$DOMAIN] " FQDN
+	if [[ "$FQDN" == "" ]]; then
 		FQDN="$(hostname).$DOMAIN"
 	fi
+	echo "Proceeding with $FQDN.."
 }
 
 ask_certCreate() {
