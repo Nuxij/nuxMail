@@ -37,7 +37,7 @@ main() {
 	echo "Creating default outbound config in $OUT_PATH.."
 	haraka -i "$OUT_PATH" || exit 1
 
-	git clone https://github.com/Joeasaurus/nuxMail.git "$NUX_PATH" || exit 1
+	git clone https://github.com/Joeasaurus/nuxMail.git --branch feature/installer --single-branch "$NUX_PATH" || exit 1
 
 	# Main logic
 	ask_hostDomain
@@ -55,6 +55,7 @@ main() {
 	link_nuxMailPlugins
 	edgeConfigs
 
+	set_Permissions
 	install_Hcont
 }
 
@@ -287,15 +288,25 @@ edgeConfigs() {
 install_Hcont() {
 	echo "Configuring hcont.."
 	# TODO: sed the IN_ and OUT_ locations in hcont
+	ln -s "$NUX_PATH/hcont" "$INSTALL_PATH/hcont"
 	chmod +x "$INSTALL_PATH/hcont"
 	read -p "Would you like to start Haraka now? [Y/n]" startNow
-	if [[ "$startNow" =~ [Yy\ ] ]]; then
+	if [[ "$startNow" != [Nn] ]]; then
 		"$INSTALL_PATH/hcont" start both
 	else
 		echo "Haraka not started. To do so, please use '$INSTALL_PATH/hcont start both'"
 	fi
 }
 
+set_Permissions() {
+	# Create haraka user
+	useradd -d "$INSTALL_PATH" -M -s /bin/false haraka
+	# Create log dir
+	mkdir -p /var/log/haraka
+	# Chown stuff + 755 it
+	chown -R haraka.haraka "$INSTALL_PATH" /var/log/haraka
+	chmod -R 755 "$INSTALL_PATH" /var/log/haraka
+}
 
 # Go
 main
