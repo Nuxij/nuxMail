@@ -53,8 +53,9 @@ main() {
 	create_MailboxesConfig
 
 	link_nuxMailPlugins
-
 	edgeConfigs
+
+	install_Hcont
 }
 
 createLinks() {
@@ -281,6 +282,18 @@ edgeConfigs() {
 	# Set size limit of emails
 	echo "20971520" > "$CONFIG_PATH/databytes"
 	createLinks "$CONFIG_PATH/databytes" "config/databytes" true
+}
+
+install_Hcont() {
+	echo "Configuring hcont.."
+	# TODO: sed the IN_ and OUT_ locations in hcont
+	chmod +x "$INSTALL_PATH/hcont"
+	read -p "Would you like to start Haraka now? [Y/n]" startNow
+	if [[ "$startNow" =~ [Yy\ ] ]]; then
+		"$INSTALL_PATH/hcont" start both
+	else
+		echo "Haraka not started. To do so, please use '$INSTALL_PATH/hcont start both'"
+	fi
 }
 
 
