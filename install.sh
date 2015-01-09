@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# IN
-# jme.rcpt_to.aliases -> /opt/haraka/config/jme.rcpt_to.aliases
-# me.mailbox_accounts -> /opt/haraka/config/jme.mailbox_accounts
-
-# OUT
-# jme.rcpt_to.aliases -> /opt/haraka/config/jme.rcpt_to.aliases
-# jme.mailbox_accounts -> /opt/haraka/config/jme.mailbox_accounts
 
 INSTALL_PATH="/opt/haraka"
 CONFIG_PATH="$INSTALL_PATH/config"
@@ -21,7 +14,7 @@ main() {
 	# Install haraka
 	if [[ ! $(npm list -g Haraka | grep Haraka) ]]; then
 		if [[ "$(whoami)"  == "root" ]]; then
-			npm install -g Haraka
+			npm install -g Haraka sha512crypt-node
 		else
 			echo "Please install Haraka globall via: sudo npm install -g Haraka"
 			exit 1
