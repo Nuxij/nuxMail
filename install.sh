@@ -27,7 +27,7 @@ main() {
 	echo "Creating default outbound config in $OUT_PATH.."
 	haraka -i "$OUT_PATH" || exit 1
 
-	git clone https://github.com/Joeasaurus/nuxMail.git --branch feature/installer --single-branch "$NUX_PATH" || exit 1
+	git clone https://github.com/Joeasaurus/nuxMail.git "$NUX_PATH" || exit 1
 
 	# Main logic
 	ask_hostDomain
