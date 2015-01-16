@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+IN_LOCATION="/opt/haraka/haraka-in"
+OUT_LOCATION="/opt/haraka/haraka-out"
+INPID_LOCATION="/var/run/haraka-in.pid"
+OUTPID_LOCATION="/var/run/haraka-out.pid"
+
+INPID=
+OUTPID=
+
+getPids() {
+        INPID="$(cat $INPID_LOCATION 2>/dev/null)"
+        OUTPID="$(cat $OUTPID_LOCATION 2>/dev/null)"
+}
+
+getPids
+
+isRoot() {
+        [[ "$(whoami)" == "root" ]] && return 0
+        return 1
+}
+exitNotRoot() {
+        echo "You need to be root for that!"
+        exit 1;
+}
+
+stats() {
+        local inStat="$(ps aux | grep $INPID 2>/dev/null| grep -v grep)"
+        local outStat="$(ps aux | grep $OUTPID 2>/dev/null| grep -v grep)"
+
+        echo "Haraka In --------"
+        echo "$inStat"
+        echo
+        echo "Haraka Out -------"
+        echo "$outStat"
+}
+
+killPid() {
+        isRoot || exitNotRoot
+        if [[ "$1" == "in" ]]; then
+                kill "$INPID"
+                rm -rf "$INPID_LOCATION"
+        elif [[ "$1" == "out" ]]; then
+                kill "$OUTPID"
+                rm -rf "$OUTPID_LOCATION"
+        elif [[ "$1" == "both" ]]; then
+                killPid "in"
+                killPid "out"
+        fi
+
+}
+
+startHaraka() {
+        isRoot || exitNotRoot
+        if [[ "$1" == "in" ]]; then
+                haraka -c "$IN_LOCATION"
+        elif [[ "$1" == "out" ]]; then
+                haraka -c "$OUT_LOCATION"
+        elif [[ "$1" == "both" ]]; then
+                startHaraka "in"
+                startHaraka "out"
+        fi
+}
+
+restartHaraka() {
+        isRoot || exitNotRoot
+        killPid "$1"
+        sleep 5
+        startHaraka "$1"
+}
+
+main() {
+        if [[ "$1" == "stats" ]]; then
+                stats
+        elif [[ "$2" != "in" && "$2" != "out" && "$2" != "both" ]]; then
+                echo "You need to specify in or out! (or 'both')"
+                return 1
+        elif [[ "$1" == "kill" ]]; then
+                killPid "$2"
+        elif [[ "$1" == "start" ]]; then
+                startHaraka "$2"
+        elif [[ "$1" == "restart" ]]; then
+                restartHaraka "$2"
+        fi
+}
+
+main $@

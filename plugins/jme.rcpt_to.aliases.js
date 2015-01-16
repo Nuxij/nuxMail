@@ -74,6 +74,9 @@ exports.hook_rcpt = function(next, connection, params) {
 		connection.logdebug(this, user + "@" + host + " aliases to " + addressAfter);
 		setParams(params, addressAfter);
 		addAddressToTransaction(connection, addressAfter);
+		if ( ! config[addressAfter.split('@')[1]]) {
+				connection.relaying = true;
+		}
 	}
 	return next();
 };
