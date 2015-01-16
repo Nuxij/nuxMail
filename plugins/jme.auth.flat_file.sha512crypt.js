@@ -41,6 +41,7 @@ exports.retrieveUser = function (connection, user, cb) {
 };
 
 exports.validateHash = function(hash, password) {
+	// Need to add support for round specification here
 	var salt = hash.match(/^\$6\$(.*)\$/)[1];
 	var validHash = sha512.b64_sha512crypt(password, salt);
 	if (validHash === hash) return true;
