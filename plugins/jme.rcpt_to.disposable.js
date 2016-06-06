@@ -1,7 +1,7 @@
 // jme.rcpt_to.disposable
 // Description: This plugin allows dated, auto-expire address aliases.
 
-var Address = require('./address').Address;
+var Address = require('address-rfc2821').Address;
 
 exports.hook_rcpt = function(next, connection, params) {
     var rcpt     = params[0];

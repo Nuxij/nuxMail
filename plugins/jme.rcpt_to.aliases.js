@@ -1,6 +1,6 @@
 // jme.rcpt_to.aliases
 // Description: Allows arbitrary aliases for addresses
-var Address = require('./address').Address;
+var Address = require('address-rfc2821').Address;
 
 function addAddressToTransaction(connection, address) {
 	connection.transaction.rcpt_to.pop();
